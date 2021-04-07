@@ -9,10 +9,14 @@ app.use(cors());
 app.use(express.json());
 
 //get messages
-app.get("/get-messages", (req, res) => {
-  emitter.once("newMessage", (message) => {
-    console.log(message);
-    res.json(message);
+app.get("/connect", (req, res) => {
+  res.writeHead(200, {
+    Connection: "keep-alive",
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+  });
+  emitter.on("newMessage", (message) => {
+    res.write(`data: ${JSON.stringify(message)} \n\n`);
   });
 });
 
